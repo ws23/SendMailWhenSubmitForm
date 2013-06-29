@@ -1,3 +1,5 @@
+// Do on Google Apps Script
+
 /*使用說明：
 # 需在 Form 的 SpreadSheet 中使用此 Script
 # 無法直接執行，會編譯錯誤
