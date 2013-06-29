@@ -1,0 +1,35 @@
+/*使用說明：
+# 需在 Form 的 SpreadSheet 中使用此 Script
+# 無法直接執行，會編譯錯誤
+# 需使用觸發器：表單收到回應時。
+*/
+
+function onFormSubmit(e) {
+
+  var timestamp = e.values[0];
+  var yourGrade = e.values[1];
+  var yourName = e.values[2]; 
+  var yourMail = e.values[3];
+  var yourPhone = e.values[4];
+  var yourClass = e.values[5];
+
+  var subject = "[暑期 Unity 密集訓練營] 收到報名資料－－" + yourName;
+
+  var emailBody = 
+      "Dear " + yourName + "：\n\n" +
+      "您於 " + timestamp + " 填寫了「暑期 Unity 密集訓練營」報名表，以下為您的報名資料：\n\n" +
+    
+      "系級：" + yourGrade + "\n" +
+      "姓名：" + yourName + "\n" +
+      "Email：" + yourMail + "\n" +
+      "手機號碼：" + yourPhone + "\n" +
+      "報名班別：" + yourClass + "\n\n" +
+     
+      "若有誤，煩請來信更正；若無誤，您無須回覆此通知信。\n\n" +
+      "--\n" +
+      "東華資工一 林育慈\n" +
+      "410121021@ems.ndhu.edu.tw";
+      
+  MailApp.sendEmail("\"" + yourName + "\" <" + yourMail + ">, \"林育慈\" <linyutsu23@gmail.com>", subject, emailBody);
+
+}
