@@ -1,0 +1,113 @@
+/*使用說明：
+# 需在 Form 的 SpreadSheet 中使用此 Script
+# 無法直接執行，會編譯錯誤
+# 需使用觸發器：表單收到回應時。
+*/
+
+function onFormSubmit(e) {
+
+  var URL = "https://docs.google.com/spreadsheet/ccc?key=0AjF2DNhWt1IXdDRkVjhsRlh0bU5kdVVtTVpQaTE2NkE";
+  var GName = "資工日暨系聚";
+  
+  var yourTimestamp = e.values[0];
+  var yourGrade = e.values[1];
+  var yourName = e.values[2];
+  var yourID = e.values[3];
+  var yourMail = e.values[4];
+  var isCSIEDAY = e.values[5];
+  var isCSIEEAT = e.values[6];
+ 
+  var timestamp;
+  var ID;
+  var stuID;
+  
+  var subject;
+  var mailBody;
+  
+  var sheets = SpreadsheetApp.openByUrl(URL).getSheets();
+  var sheet = sheets[0];
+  var sheetList = sheets[2];
+  var sheetMem = sheets[1];
+  var data = sheet.getDataRange().getValues();
+  var dataList = sheetList.getDataRange().getValues();
+  var dataMem = sheetMem.getDataRange().getValues();
+  
+  var checkExist = false;
+  var isMember = false;
+  
+  for(var i = 1; i < data.length-1; i++){
+    timestamp = sheet.getRange(i+1, 1).getValue();
+    ID = sheet.getRange(i+1, 4).getValue();
+    
+    if(ID == yourID){
+      checkExist = true;
+      sheet.getRange(data.length, 8).setValue(i+1);
+      break;
+    }
+  }
+
+  for(var i=1;i<dataMem.length-1;i++){
+    if(sheetMem.getRange(i+1, 1).getValue() == yourID){ 
+      if(sheetMem.getRange(i+1, 3).getValue() == "是")
+        isMember = true;
+      break;
+    }
+  }
+
+var money = 0;
+if(isCSIEDAY=="是")
+  money += 50;
+if(isCSIEEAT=="是" && isMember==false)
+  money += 150;
+  
+  
+if(checkExist == true){
+    subject = "[" + GName + "] 收到報名資料(重複報名)──" + yourName;
+    mailBody = 
+      yourName + "您好，\n" + 
+      "感謝您於 " + yourTimestamp + " 報名 " + GName + "，\n" +
+      "不過我們發現您於 " + timestamp + " 曾以相同的EMail " + yourMail + " 報名本次活動，\n" + 
+      "若您真的未報名過" + GName + "，\n" + 
+      "還請您回信告訴我們，否則此次報名將無效，感謝您！";
+  }
+  else{
+    subject = "[" + GName + "] 收到報名資料──" + yourName;
+    mailBody = 
+      yourName + "您好，\n" + 
+      "感謝您於 " + yourTimestamp + " 報名 " + GName + "，\n" +
+      "以下為您的報名資料：\n" + 
+      "系級：" + yourGrade + "\n" + 
+      "學號：" + yourID + "\n" +
+      "姓名：" + yourName + "\n" +
+      "EMail：" + yourMail + "\n" +
+      "是否參加「資工日運動競賽」：" + isCSIEDAY + "\n" + 
+      "是否參加「系聚」：" + isCSIEEAT + "\n" + 
+      "應繳金額：＄" + money + "\n\n" + 
+      
+      "請於11/27（三）22：00前，至工D307（前端網路技術實驗室）進門後第一個座位繳交報名費用；\n" +
+      "若正巧系學會幹部不在，請自行於桌上繳費處繳納報名費並留下日期、學號、姓名。\n" + 
+      "費用需繳交完畢才算報名完成喔！\n\n" + 
+      
+      "最後，若您的報名資料有誤，煩請回信告知，感謝您！" ;
+    
+    sheetList.getRange(dataList.length+1, 1).setValue(yourTimestamp);
+    sheetList.getRange(dataList.length+1, 2).setValue(yourGrade);
+    sheetList.getRange(dataList.length+1, 3).setValue(yourName);
+    sheetList.getRange(dataList.length+1, 4).setValue(yourID);
+    sheetList.getRange(dataList.length+1, 5).setValue(yourMail);
+    sheetList.getRange(dataList.length+1, 6).setValue(isCSIEDAY);
+    sheetList.getRange(dataList.length+1, 7).setValue(isCSIEEAT);
+    sheetList.getRange(dataList.length+1, 8).setValue(money);
+    sheet.getRange(data.length, 8).setValue(money);
+  }
+    
+    mailBody = mailBody + "\n\n" + 
+      "--\n" +
+      "東華資工系學會 網管 林育慈\n" +
+      "http://csiesa.csie.ndhu.edu.tw\n" + 
+      " 0953-381-533\n" +  
+      "ndhucsiesa@gmail.com";
+    
+  MailApp.sendEmail("\"" + yourName + "\" <" + yourMail + ">, \"東華資工系學會\" <ndhucsiesa@gmail.com>", subject, mailBody);
+
+}
