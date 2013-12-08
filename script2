@@ -4,9 +4,13 @@
 # 需使用觸發器：表單收到回應時。
 */
 
+// Sample SpreadSheet : https://docs.google.com/spreadsheet/ccc?key=0AjF2DNhWt1IXdDRkVjhsRlh0bU5kdVVtTVpQaTE2NkE
+// 請注意下面的「工作表」......第一頁是 form response, 第二頁是會員名冊, 第三頁則是將「非重複報名」資料貼過去的頁面（總覺得沒那麼必要欸其實...畢竟有重複報名的話，第一頁也會有標記....）
+
+
 function onFormSubmit(e) {
 
-  var URL = "https://docs.google.com/spreadsheet/ccc?key=0AjF2DNhWt1IXdDRkVjhsRlh0bU5kdVVtTVpQaTE2NkE";
+  var URL = ""; // SpreadSheet's link(response)
   var GName = "資工日暨系聚";
   
   var yourTimestamp = e.values[0];
@@ -41,7 +45,7 @@ function onFormSubmit(e) {
     
     if(ID == yourID){
       checkExist = true;
-      sheet.getRange(data.length, 8).setValue(i+1);
+      sheet.getRange(data.length, 9).setValue(i+1);
       break;
     }
   }
